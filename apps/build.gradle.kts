@@ -1,23 +1,20 @@
 plugins {
-    id("org.springframework.boot")
+    id("common-java")
+    id("common-spring-boot")
 }
 
-description = "apps"
+description = "spring boot application 을 만드는 프로젝트"
 
 dependencies {
     // 1. core 모듈을 의존성으로 추가 (core의 Service, Domain 접근 가능)
     implementation(project(":core"))
 
     // 2. Web MVC 컨트롤러 및 RestController 구동용 스타터
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation(libs.spring.boot.starter.web)
+    testImplementation(libs.spring.boot.starter.test)
 }
 
-// apps 모듈은 단독 실행 가능한 Fat JAR로 빌드됨
-tasks.bootJar {
-    enabled = true
-}
-
+// apps 모듈은 단독 실행 가능한 Fat JAR 만 빌드되면 됨
 tasks.jar {
     enabled = false
 }
