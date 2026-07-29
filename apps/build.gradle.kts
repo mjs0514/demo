@@ -7,7 +7,7 @@ description = "spring boot application 을 만드는 프로젝트"
 
 dependencies {
     // 1. core 모듈을 의존성으로 추가 (core의 Service, Domain 접근 가능)
-    implementation(project(":core"))
+    implementation(project(":demo-core"))
 
     // 2. Web MVC 컨트롤러 및 RestController 구동용 스타터
     implementation(libs.spring.boot.starter.web)

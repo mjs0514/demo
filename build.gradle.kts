@@ -8,7 +8,7 @@ val packageDistribution = tasks.register<Zip>("packageDistribution") {
     description = "apps의 bootJar와 bin 디렉토리의 실행 스크립트를 묶어 배포용 ZIP을 생성합니다."
 
     // apps 모듈의 bootJar 빌드가 완료된 후 실행
-    dependsOn(":apps:bootJar")
+    dependsOn(":demo-apps:bootJar")
 
     archiveBaseName.set(rootProject.name)
     archiveVersion.set(project.version.toString())
@@ -33,7 +33,7 @@ val packageDistribution = tasks.register<Zip>("packageDistribution") {
         }
 
         // ② apps 모듈에서 생성된 bootJar 파일만 libs/ 디렉토리에 포함
-        from(project(":apps").tasks.named("bootJar")) {
+        from(project(":demo-apps").tasks.named("bootJar")) {
             into("libs")
         }
     }

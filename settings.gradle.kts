@@ -16,5 +16,20 @@ dependencyResolutionManagement {
 
 rootProject.name = "demo"
 
-include("apps")
-include("core")
+val excludedProjectDirs = setOf(
+    "build-logic", // includeBuild로 따로 관리
+)
+
+rootDir.listFiles()
+    ?.asSequence()
+    ?.filter { it.isDirectory }
+    ?.filterNot { it.name.startsWith(".") }
+    ?.filterNot { it.name in excludedProjectDirs }
+    ?.filter { it.resolve("build.gradle.kts").isFile }
+    ?.sortedBy { it.name }
+    ?.forEach { dir ->
+        val projectPath = ":${rootProject.name}-${dir.name}"
+
+        include(projectPath)
+        project(projectPath).projectDir = dir
+    }
