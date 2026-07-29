@@ -7,7 +7,7 @@ Gradle 멀티 모듈 프로젝트의 기본 구조를 실험하기 위한 데모
 ## 설계 방향
 
 - 루트 프로젝트는 배포 산출물 조립만 담당합니다.
-- 실제 소스와 의존성은 `apps`, `core` 같은 서브 프로젝트에서 관리합니다.
+- 실제 소스와 의존성은 `demo-apps`, `demo-core` 같은 서브 프로젝트에서 관리합니다.
 - 공통 Java/Spring Boot 빌드 설정은 `build-logic`의 precompiled convention plugin으로 관리합니다.
 - 프로젝트 공통 프로퍼티는 `gradle.properties`에서 관리합니다.
 - 의존성 및 플러그인 버전은 `gradle/libs.versions.toml`에서 중앙 관리합니다.
@@ -40,12 +40,13 @@ Gradle 멀티 모듈 프로젝트의 기본 구조를 실험하기 위한 데모
 
 - `settings.gradle.kts`
   - 프로젝트 이름과 서브 모듈을 정의합니다.
+  - 서브 모듈은 `${rootProject.name}-${subDir.name}` 라는 이름으로 자동 include 됩니다.
   - `includeBuild("build-logic")`를 통해 convention plugin을 사용할 수 있게 합니다.
   - 전체 프로젝트의 repository 정책을 정의합니다.
 
 - `build.gradle.kts`
   - `base` 플러그인을 사용하여 루트 프로젝트를 distribution 중심 프로젝트로 유지합니다.
-  - `packageDistribution` 태스크를 통해 `apps`의 `bootJar`와 `script` 디렉토리의 실행 스크립트를 ZIP으로 묶습니다.
+  - `packageDistribution` 태스크를 통해 `demo-apps`의 `bootJar`와 `script` 디렉토리의 실행 스크립트를 ZIP으로 묶습니다.
   - 루트 `build` 실행 시 distribution 패키지가 함께 만들어지도록 연결합니다.
 
 - `gradle.properties`
@@ -81,7 +82,7 @@ Gradle wrapper와 버전 카탈로그를 관리하는 디렉토리입니다.
 
 - `common-java`를 적용하여 Java 공통 설정을 사용합니다.
 - `common-spring-boot`를 적용하여 Spring Boot 애플리케이션 빌드 설정을 사용합니다.
-- `core` 모듈을 의존하여 서비스/도메인 로직을 사용합니다.
+- `demo-core` 모듈을 의존하여 서비스/도메인 로직을 사용합니다.
 - `bootJar`가 최종 실행 가능한 애플리케이션 JAR를 생성합니다.
 - 일반 `jar`는 비활성화하여 plain jar가 별도로 생성되지 않도록 합니다.
 
@@ -154,7 +155,7 @@ Java 기반 모듈에서 공통으로 사용하는 설정을 제공합니다.
 
 - 라이브러리 모듈에는 이 플러그인을 적용하지 않습니다.
 - `org.springframework.boot` 플러그인이 적용되면 일반 `jar`와 `bootJar` 산출물 정책이 Spring Boot 기준으로 바뀝니다.
-- `core`처럼 실행 애플리케이션이 아닌 모듈에 적용하면 `bootJar` 비활성화, plain jar classifier 조정 같은 보정이 필요해질 수 있습니다.
+- `demo-core`처럼 실행 애플리케이션이 아닌 모듈에 적용하면 `bootJar` 비활성화, plain jar classifier 조정 같은 보정이 필요해질 수 있습니다.
 
 ## 어디에 무엇을 추가할까?
 
@@ -181,8 +182,8 @@ Java 기반 모듈에서 공통으로 사용하는 설정을 제공합니다.
 주요 태스크:
 
 ```bash
-./gradlew :apps:bootJar
-./gradlew :core:jar
+./gradlew :demo-apps:bootJar
+./gradlew :demo-core:jar
 ./gradlew packageDistribution
 ```
 
