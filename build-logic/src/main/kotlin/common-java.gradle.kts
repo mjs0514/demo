@@ -12,10 +12,10 @@ java {
 
 dependencies {
     // 공통 컴파일/테스트 라이브러리 (Lombok, JUnit)
-    "compileOnly"("org.projectlombok:lombok")
-    "annotationProcessor"("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
-    "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 // Jar 작업 설정 (Manifest 등 커스텀 로직 적용)

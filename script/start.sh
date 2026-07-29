@@ -5,7 +5,7 @@ echo "start"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="$SCRIPT_DIR/../libs"
 
-jars=( "$LIB_DIR"/apps-*.jar )
+jars=( "$LIB_DIR"/demo-apps-*.jar )
 
 if [ ${#jars[@]} -eq 0 ]; then
     echo "No apps jar found in $LIB_DIR"
