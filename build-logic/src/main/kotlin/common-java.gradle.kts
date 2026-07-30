@@ -10,12 +10,12 @@ java {
     }
 }
 
+val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
 dependencies {
     // 공통 컴파일/테스트 라이브러리 (Lombok, JUnit)
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    compileOnly(libs.findLibrary("lombok").get())
+    annotationProcessor(libs.findLibrary("lombok").get())
 }
 
 // Jar 작업 설정 (Manifest 등 커스텀 로직 적용)
