@@ -14,4 +14,5 @@ dependencyManagement {
 dependencies {
     // 순수 Spring 기능 (DB/JPA 관련 의존성 필요 시 추가)
     implementation(libs.spring.boot.starter)
+    implementation(project(":shared:common"))
 }
