@@ -22,8 +22,8 @@ Gradle 멀티 모듈 프로젝트의 기본 구조를 실험하기 위한 데모
 |-- build-logic/
 |   `-- src/main/kotlin/
 |       |-- common-java.gradle.kts
-|       `-- common-querydsl.gradle.kts
-|       `-- common-spring-boot.gradle.kts
+|       |-- common-querydsl.gradle.kts
+|       |-- common-spring-boot.gradle.kts
 |       `-- common-test.gradle.kts
 |-- gradle/
 |   |-- libs.versions.toml
