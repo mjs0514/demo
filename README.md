@@ -29,6 +29,12 @@ Gradle 멀티 모듈 프로젝트의 기본 구조를 실험하기 위한 데모
 |   |-- libs.versions.toml
 |   `-- wrapper/
 |-- script/
+|-- shared/
+|   |-- auto-configure/
+|   |-- common/
+|   |-- config-for-webmvc/
+|   |-- discovery-kubernetes/
+|   `-- web/
 |-- build.gradle.kts
 |-- settings.gradle.kts
 |-- gradle.properties
@@ -96,6 +102,38 @@ Gradle wrapper와 버전 카탈로그를 관리하는 디렉토리입니다.
 - Spring Boot 애플리케이션 모듈은 아니므로 `common-spring-boot`는 적용하지 않습니다.
 - Spring dependency management 플러그인과 Spring Boot BOM은 모듈에서 직접 적용합니다.
 - 일반 Java library 형태의 JAR를 생성합니다.
+
+### `shared/auto-configure`
+
+공통 모듈에 포함되는 도메인들의 자동구성 클래스들을 모은 모듈
+
+- Spring의 자동 구성 시스템을 활용합니다.
+- 원하는 모듈의 자동구성 클래스만 선택적으로 등록할 수 있도록 설계되어 있음
+
+### `shared/common`
+
+master 의 :shared:sfm-common 프로젝트를 모방 
+
+- @Component, @Value 의 기능을 사용합니다.
+
+### `shared/config-for-webmvc`
+
+master 의 :shared:config-for-webmvc 프로젝트를 모방
+
+- @Configuration, @Component 기능을 사용합니다.
+- WebMvcConfigurer 를 사용합니다.
+
+
+### `shared/discovery-kubernetes`
+
+master 의 :shared:sfm-discovery-kubernetes 프로젝트를 모방
+
+- kubernetes client 를 wrapping 한 클래스
+- 기존에는 자동구성 클래스를 해당 프로젝트에서 구현했으나 이것을 :shared:auto-configure 프로젝트로 분리했습니다.
+
+### `shared/web`
+
+master 의 :shared:sfm-web 프로젝트를 모방
 
 ### `script/`
 
@@ -229,9 +267,10 @@ JPA QueryDSL 쿼리 타입과 테스트에 필요한 공통 설정입니다.
 ## 빌드 명령
 
 루트 Gradle wrapper를 기준으로 실행합니다.
+-Pversion 옵션을 주지 않으면 gradle.properties 의 version 으로 빌드됩니다.
 
 ```bash
-./gradlew build
+./gradlew build -Pversion=${VERSION}
 ```
 
 주요 태스크:
@@ -247,6 +286,26 @@ Windows 환경에서는 다음처럼 실행합니다.
 ```powershell
 .\gradlew.bat build
 .\gradlew.bat packageDistribution
+```
+
+### 애플리케이션 실행
+
+빌드 산출물 (/build/distribution/demo-${VERSION}.zip) 의 압축을 해제한다.
+
+```text
+demo-${VERSION}
+|-- bin/
+|   |-- start.sh
+|   `-- stop.sh
+|-- libs/
+    `-- apps-${VERSION}.jar
+```
+
+애플리케이션의 실행 및 버전 확인은 다음처럼 실행합니다. 
+
+```bash
+./start.sh
+java -jar apps-${VERSION}.jar -version
 ```
 
 ## 유지보수 원칙
