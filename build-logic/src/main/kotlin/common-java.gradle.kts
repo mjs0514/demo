@@ -1,5 +1,6 @@
 plugins {
     java
+    id("common-test")
 }
 
 group="com.tmax"

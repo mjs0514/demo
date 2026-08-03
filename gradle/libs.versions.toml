@@ -8,6 +8,11 @@ lombok = "1.18.46"
 # Utils
 fabric8 = "7.6.1"
 
+# Test
+junit5 = "5.10.2"
+assertj = "3.25.3"
+
+
 [libraries]
 spring-boot-gradle-plugin = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "spring-boot" }
 spring-dependency-management-gradle-plugin = { module = "io.spring.dependency-management:io.spring.dependency-management.gradle.plugin", version.ref = "spring-dependency-management" }
@@ -24,7 +29,10 @@ fabric8-kubernetes-client = { module = "io.fabric8:kubernetes-client", version.r
 
 lombok = {module = "org.projectlombok:lombok", version.ref = "lombok"}
 
-
+junit-bom = {module = "org.junit:junit-bom", version.ref="junit5"}
+junit-jupiter = {module = "org.junit.jupiter:junit-jupiter"}
+junit-platform-launcher = {module = "org.junit.platform:junit-platform-launcher"}
+assertj-core = {module = "org.assertj:assertj-core", version.ref="assertj"}
 
 [plugins]
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
