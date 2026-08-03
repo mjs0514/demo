@@ -1,5 +1,6 @@
 plugins {
     id("common-java")
+    id("common-querydsl")
     alias(libs.plugins.spring.dependency.management)
 }
 
