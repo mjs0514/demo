@@ -40,7 +40,7 @@ Gradle 멀티 모듈 프로젝트의 기본 구조를 실험하기 위한 데모
 
 - `settings.gradle.kts`
   - 프로젝트 이름과 서브 모듈을 정의합니다.
-  - 서브 모듈은 `${rootProject.name}-${subDir.name}` 라는 이름으로 자동 include 됩니다.
+  - ~~서브 모듈은 `${rootProject.name}-${subDir.name}` 라는 이름으로 자동 include 됩니다.~~
   - `includeBuild("build-logic")`를 통해 convention plugin을 사용할 수 있게 합니다.
   - 전체 프로젝트의 repository 정책을 정의합니다.
 
