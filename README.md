@@ -133,6 +133,59 @@ Java 기반 모듈에서 공통으로 사용하는 설정을 제공합니다.
 - 특정 JAR 태스크를 강제로 켜거나 끄는 `enabled` 설정은 여기 넣지 않는 것이 좋습니다.
 - 애플리케이션 모듈과 라이브러리 모듈의 산출물 정책이 다를 수 있으므로 `jar`, `bootJar` 활성화 여부는 각 모듈 또는 전용 convention plugin에서 결정합니다.
 
+### `common-test`
+
+파일: `build-logic/src/main/kotlin/common-test.gradle.kts`
+
+Java 모듈의 테스트 설정을 공통으로 사용하는 설정입니다.
+
+현재 포함된 내용:
+
+- `java` 플러그인 적용
+- `jacoco` 플러그인 적용
+- JUnit BOM, JUnit Jupiter, JUnit Platform Launcher 설정
+- AssertJ 설정
+- 모든 `Test` 태스크에 `useJUnitPlatform()` 적용
+- `Test` 태스크 실행 후 Jacoco 테스트 리포트 자동 연결
+- 테스트 실행 옵션, JVM 메모리, 로깅 설정
+
+이 플러그인을 추가하면 좋은 경우:
+
+- 전체 Java 모듈의 테스트 설정을 한 번에 맞추고 싶을 때
+- JUnit 5, AssertJ, Jacoco 설정을 모듈마다 반복하고 싶지 않을 때
+- 테스트 실행 옵션, 메모리 제한, fork 설정 등을 공통으로 관리하고 싶을 때
+
+주의 사항:
+
+- 라이브러리 모듈의 테스트 설정은 대개 이 플러그인을 사용합니다.
+- `jacocoExclusionPatterns` 프로퍼티가 `gradle.properties`와 Jacoco 리포트 제외 설정을 함께 관리합니다.
+- 테스트 클래스에 `common-java` 대신 이 플러그인을 먼저 적용해야 하는 다른 convention plugin 의존성이 있을 수 있습니다.
+
+### `common-querydsl`
+
+파일: `build-logic/src/main/kotlin/common-querydsl.gradle.kts`
+
+JPA QueryDSL 쿼리 타입과 테스트에 필요한 공통 설정입니다.
+
+현재 포함된 내용:
+
+- `java` 플러그인 적용
+- QueryDSL Core, QueryDSL JPA 설정
+- `jakarta.persistence-api`, `jakarta.annotation-api`를 `compileOnly`로 설정
+- QueryDSL APT 설정 시 `.jakarta` classifier 사용
+- `JavaCompile` 태스크에 generated source output directory 설정
+
+이 플러그인을 추가하면 좋은 경우:
+
+- JPA Entity 기반의 `Q` class를 사용하는 모듈
+- QueryDSL 중심의 repository, service, adapter 모듈
+- annotation processing 설정과 generated source path를 모듈별로 직접 관리하고 싶지 않을 때
+
+주의 사항:
+
+- `Q` class 생성 경로는 build 디렉터리의 generated source로 지정됩니다.
+- JPA 의존성과 Annotation API는 보통 `implementation`이 아니라 `compileOnly`로 사용하는 것이 맞습니다.
+
 ### `common-spring-boot`
 
 파일: `build-logic/src/main/kotlin/common-spring-boot.gradle.kts`
