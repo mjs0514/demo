@@ -35,7 +35,3 @@ tasks.withType<Jar>().configureEach {
     // 만약 커스텀 확장 함수 setupSfmManifest(...)가 있다면
     // build-logic 내의 Kotlin 파일/클래스로 정의하여 호출 가능합니다.
 }
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
