@@ -2,12 +2,111 @@ plugins {
     base
 }
 
-// 2. 배포용 ZIP 패키징 태스크 정의 (tasks.register<Zip> 이용)
+tasks.register("generateDbScripts") {
+    group = "database"
+    description = "Generate merged DB scripts per vendor and module"
+
+    doLast {
+        fun sql(dir: File, name: String) = File(dir, name).takeIf(File::exists)
+
+        fun versionKey(name: String): List<Int> =
+            name.removePrefix("V")
+                .removeSuffix(".sql")
+                .split('.')
+                .map { it.toIntOrNull() ?: Int.MAX_VALUE }
+
+        fun compareVersion(a: String, b: String): Int {
+            val left = versionKey(a)
+            val right = versionKey(b)
+            left.zip(right).firstOrNull { it.first != it.second }?.let { return it.first - it.second }
+            return left.size - right.size
+        }
+
+        fun migrationFiles(dir: File): List<File> {
+            val migrationDir = File(dir, "migration")
+            if (!migrationDir.isDirectory) return emptyList()
+            return migrationDir.listFiles()
+                ?.filter { it.isFile && it.extension == "sql" }
+                ?.sortedWith(Comparator { a, b -> compareVersion(a.name, b.name).takeIf { it != 0 } ?: a.name.compareTo(b.name) })
+                ?: emptyList()
+        }
+
+        fun modules(dir: File): List<File> =
+            dir.listFiles()
+                ?.filter { it.isDirectory && it.name != "common" }
+                ?.sortedBy { it.name }
+                ?: emptyList()
+
+        fun writeMerged(out: File, title: String, files: List<File>) {
+            out.writeText(buildString {
+                appendLine("-- $title")
+                appendLine()
+                files.forEach {
+                    appendLine("-- File: ${it.parentFile.name}/${it.name}")
+                    appendLine(it.readText())
+                    appendLine()
+                }
+            })
+        }
+
+        fun writeChanges(out: File, vendor: String, commonDir: File, vendorModules: List<File>) {
+            val grouped = linkedMapOf<String, MutableList<Pair<String, File>>>()
+
+            migrationFiles(commonDir).forEach { grouped.getOrPut(it.name) { mutableListOf() }.add("common" to it) }
+            vendorModules.forEach { module ->
+                migrationFiles(module).forEach { grouped.getOrPut(it.name) { mutableListOf() }.add(module.name to it) }
+            }
+
+            out.writeText(buildString {
+                appendLine("-- CHANGES FOR $vendor")
+                appendLine()
+                grouped.toSortedMap(Comparator(::compareVersion)).forEach { (version, files) ->
+                    appendLine("-- Migration: $version")
+                    files.forEach { (module, file) ->
+                        appendLine("-- Module: $module")
+                        appendLine(file.readText())
+                        appendLine()
+                    }
+                }
+            })
+        }
+
+        val dbRoot = file("db")
+        val vendorDirs = dbRoot.listFiles()
+            ?.filter { it.isDirectory }
+            ?.sortedBy { it.name }
+            ?: emptyList()
+
+        vendorDirs.forEach { vendorDir ->
+            val outputDir = layout.buildDirectory.dir("generated-db/${vendorDir.name}").get().asFile
+            val commonDir = File(vendorDir, "common")
+            val vendorModules = modules(vendorDir)
+
+            outputDir.mkdirs()
+            outputDir.listFiles()?.forEach { it.delete() }
+
+            writeMerged(
+                File(outputDir, "schema.sql"),
+                "SCHEMA FOR ${vendorDir.name}",
+                listOfNotNull(sql(commonDir, "schema.sql")) + vendorModules.mapNotNull { sql(it, "schema.sql") }
+            )
+
+            writeMerged(
+                File(outputDir, "data.sql"),
+                "DATA FOR ${vendorDir.name}",
+                listOfNotNull(sql(commonDir, "data.sql")) + vendorModules.mapNotNull { sql(it, "data.sql") }
+            )
+
+            writeChanges(File(outputDir, "changes.sql"), vendorDir.name, commonDir, vendorModules)
+        }
+    }
+}
+
 val packageDistribution = tasks.register<Zip>("packageDistribution") {
     group = "distribution"
-    description = "apps의 bootJar와 bin 디렉토리의 실행 스크립트를 묶어 배포용 ZIP을 생성합니다."
+    description = "Package apps bootJar, scripts, and generated DB files into a ZIP"
 
-    // apps 모듈의 bootJar 빌드가 완료된 후 실행
+    dependsOn("generateDbScripts")
     dependsOn(":apps:bootJar")
 
     archiveBaseName.set(rootProject.name)
@@ -15,31 +114,35 @@ val packageDistribution = tasks.register<Zip>("packageDistribution") {
     archiveExtension.set("zip")
 
     into("${rootProject.name}-${project.version}") {
-
-        // ① bin/ 디렉토리 내 스크립트 포함 및 실행 권한(rwxr-xr-x) 설정
         from("script") {
             into("bin")
             filePermissions {
                 user {
-                    read = true; write = true; execute = true
+                    read = true
+                    write = true
+                    execute = true
                 }
                 group {
-                    read = true; execute = true
+                    read = true
+                    execute = true
                 }
                 other {
-                    read = true; execute = true
+                    read = true
+                    execute = true
                 }
             }
         }
 
-        // ② apps 모듈에서 생성된 bootJar 파일만 libs/ 디렉토리에 포함
         from(project(":apps").tasks.named("bootJar")) {
             into("libs")
+        }
+
+        from(layout.buildDirectory.dir("generated-db")) {
+            into("db")
         }
     }
 }
 
-// 3. root의 build 태스크 실행 시 Zip 패키징이 자동으로 함께 수행되도록 연결
 tasks.build {
     dependsOn(packageDistribution)
 }

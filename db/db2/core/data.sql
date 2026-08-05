@@ -1,0 +1,10 @@
+INSERT INTO CORE_SETTING (ID, NAME, VALUE)
+SELECT 1,
+       'timezone',
+       'Asia/Seoul'
+FROM SYSIBM.SYSDUMMY1
+WHERE NOT EXISTS (
+    SELECT *
+    FROM CORE_SETTING
+    WHERE NAME = 'timezone'
+);
