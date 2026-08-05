@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 public class DiscoveryService {
     private final MasterPeerRegistryKubernetes k8s;
 
-
     public DiscoveryService(MasterPeerRegistryKubernetes k8s) {
         this.k8s = k8s;
     }

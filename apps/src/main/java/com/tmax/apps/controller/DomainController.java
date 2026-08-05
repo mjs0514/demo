@@ -1,4 +1,3 @@
 package com.tmax.apps.controller;
 
-public class DomainController {
-}
+public class DomainController {}

@@ -2,7 +2,6 @@ package com.tmax;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -17,10 +16,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 public final class VersionCommand {
-    public static void printVersion(
-            String[] args,
-            Class<?> sourceClass
-    ) {
+    public static void printVersion(String[] args, Class<?> sourceClass) {
         try {
             Manifest manifest = loadManifest(sourceClass);
             if (manifest == null) {

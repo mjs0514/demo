@@ -1,10 +1,9 @@
 package com.tmax.core.entity;
 
+import static com.tmax.core.entity.EventEntity.TABLE_NAME;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import static com.tmax.core.entity.EventEntity.TABLE_NAME;
 
 @Entity
 @Table(name = TABLE_NAME)

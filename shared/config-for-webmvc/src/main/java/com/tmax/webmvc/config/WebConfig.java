@@ -1,14 +1,13 @@
 package com.tmax.webmvc.config;
 
+import static com.tmax.webmvc.config.HostFileInterceptor.PathConstants_DIVIDER;
+
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.*;
-
-import java.util.List;
-
-import static com.tmax.webmvc.config.HostFileInterceptor.PathConstants_DIVIDER;
 
 /**
  * master 에서 config-for-webmvc 안쓰이고 있는거 아닌지 확인이 필요
@@ -18,7 +17,6 @@ import static com.tmax.webmvc.config.HostFileInterceptor.PathConstants_DIVIDER;
 public class WebConfig implements WebMvcConfigurer {
     public static final String API_PREFIX = "/api";
     public static final String WEBADMIN_PREFIX = "/webadmin";
-
 
     final HostFileInterceptor hostFileInterceptor;
 

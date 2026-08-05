@@ -1,6 +1,7 @@
 plugins {
     id("common-java")
     id("common-spring-boot")
+    id("common-spotless")
 }
 
 description = "spring boot application 을 만드는 프로젝트"

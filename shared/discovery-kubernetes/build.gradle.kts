@@ -1,5 +1,6 @@
 plugins {
     id("common-java")
+    id("common-spotless")
 }
 
 dependencies {

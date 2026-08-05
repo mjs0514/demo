@@ -1,9 +1,9 @@
 package com.tmax.core.common;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.tmax.common.config.EnvironmentValueProvider;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommonServiceTest {
     @Test

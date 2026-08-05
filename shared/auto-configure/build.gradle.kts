@@ -1,5 +1,7 @@
 plugins {
     id("common-java")
+    id("common-spotless")
+
     alias(libs.plugins.spring.dependency.management)
 }
 
